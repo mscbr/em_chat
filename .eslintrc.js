@@ -38,6 +38,7 @@ module.exports = {
         aspects: ['invalidHref', 'preferButton']
       }
     ],
-    '@typescript-eslint/explicit-module-boundary-types': 'off'
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    'react/prop-types': 'off'
   }
 };
