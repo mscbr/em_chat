@@ -1,5 +1,7 @@
 import { AppProps } from 'next/app';
-import { ThemeProvider, theme, CSSReset } from '@chakra-ui/react';
+import { ThemeProvider, CSSReset } from '@chakra-ui/react';
+
+import { theme } from 'theme';
 
 const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   return (

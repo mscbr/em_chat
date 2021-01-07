@@ -8,34 +8,34 @@ const Chat: React.FC = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<string[]>([]);
   const handleSendMessage = () => {
-    setMessages((state) => [...state, message]);
+    if (message) setMessages((state) => [...state, message]);
     setMessage('');
   };
   return (
     <Grid
+      textStyle="basicText"
       h="100vh"
       templateColumns={upSm ? '1fr 2fr' : '1fr'}
       templateRows="3fr 1fr 1fr"
       gap={1}
-      color="white"
-      background="white"
-      border="2px solid white"
+      background="silver"
+      border="8px solid silver"
       borderRadius={5}
     >
-      <GridItem bg="black" p={8} display={!upSm && 'none'}>
+      <GridItem bg="surface" p={8} display={!upSm && 'none'}>
         USER LIST
       </GridItem>
-      <GridItem bg="black" p={8} rowSpan={2}>
+      <GridItem bg="surface" p={8} rowSpan={2}>
         <ul>
           {messages.map((item, i) => (
             <li key={`${i}-item`}>{item}</li>
           ))}
         </ul>
       </GridItem>
-      <GridItem bg="black" p={8} rowSpan={2} display={!upSm && 'none'}>
+      <GridItem bg="surface" p={8} rowSpan={2} display={!upSm && 'none'}>
         USER PROFILE/CAMERA
       </GridItem>
-      <GridItem p={2} bg="black">
+      <GridItem p={2} bg="surface">
         <MessageInput
           value={message}
           onChange={({ target: { value } }) => setMessage(value)}
