@@ -26,7 +26,6 @@ const MessageInput: React.FC<Props> = ({ value, onChange, onSend }) => {
         onChange={onChange}
         placeholder="Your message..."
         onKeyDown={handleKeyDown}
-        isFullWidth={true}
         flexGrow={1}
       />
       <Button onClick={onSend} size="sm" variant="outline" mt={4}>
