@@ -10,7 +10,7 @@ interface Props {
 
 const MessageInput: React.FC<Props> = ({ value, onChange, onSend }) => {
   const handleKeyDown = ({ key }: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (key === 'Enter') onSend();
+    if (key === 'Enter' && !!value) onSend();
   };
   return (
     <Container
