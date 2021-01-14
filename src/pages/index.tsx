@@ -1,5 +1,6 @@
 import React from 'react';
+import Login from 'pages/login';
 
 export default function Home(): JSX.Element {
-  return <>HELLO NEXT 2</>;
+  return <Login />;
 }

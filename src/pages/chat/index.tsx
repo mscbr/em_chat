@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, GridItem, useBreakpointValue } from '@chakra-ui/react';
+import Router from 'next/router';
 
 import MessageInput from 'components/messageInput';
 import MesageList from 'components/messageList';
 import { IMessage } from 'types/message';
+import useLocalStorage from 'hooks/useLocalStorage';
 
 import { messages as msgs } from 'utils/mockData/messages';
 
 const Chat: React.FC = () => {
+  const [username] = useLocalStorage('username');
   const upSm = useBreakpointValue({ base: false, md: true });
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<IMessage[]>(msgs);
@@ -17,12 +20,15 @@ const Chat: React.FC = () => {
         ...state,
         {
           content: message,
-          author: 'mscbr',
+          author: username,
           timeStamp: new Date().toISOString()
         }
       ]);
     setMessage('');
   };
+  useEffect(() => {
+    if (!username) Router.push('/');
+  }, [username]);
   return (
     <Grid
       textStyle="basicText"
