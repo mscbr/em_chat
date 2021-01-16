@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Router from 'next/router';
 import {
   Center,
   FormControl,
@@ -10,8 +11,16 @@ import {
 } from '@chakra-ui/react';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 
+import useLocalStorage from 'hooks/useLocalStorage';
+
 const Login: React.FC = () => {
-  const [nick, setNick] = useState('');
+  const [storage, setStorage] = useLocalStorage('username');
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    if (storage) Router.push('/chat');
+  }, [storage]);
+
   return (
     <Center
       border="15px solid black"
@@ -23,22 +32,28 @@ const Login: React.FC = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          // event doesnt provide anything usefull
-          // just write logic when onClick
         }}
       >
-        <FormControl id="nick">
+        <FormControl id="username">
           <FormLabel>n i c k</FormLabel>
           <Input
             size="lg"
-            value={nick}
-            onChange={({ target: { value } }) => setNick(value)}
+            value={username}
+            onChange={({ target: { value } }) => setUsername(value)}
+            onKeyDown={({ key }) => {
+              if (key === 'Enter') {
+                setStorage(username);
+                setUsername('');
+              }
+            }}
           />
           <FormHelperText>enter your chat nick</FormHelperText>
           {false && <FormErrorMessage>E R R 0 R</FormErrorMessage>}
           <Button
+            onClick={() => {
+              setStorage(username);
+            }}
             mt={4}
-            type="submit"
             variant="outline"
             border="2px"
             colorScheme="black"
