@@ -6,11 +6,12 @@ import { IMessage } from 'types/message';
 
 interface Props {
   messages: IMessage[];
+  username: string;
 }
 
-const MessageList: React.FC<Props> = ({ messages }) => {
+const MessageList: React.FC<Props> = ({ messages, username }) => {
   const upSm = useBreakpointValue({ base: false, md: true });
-  const bottomMsgRef = useRef<HTMLDivElement>();
+  const bottomMsgRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = useCallback(() => {
     if (bottomMsgRef.current) bottomMsgRef.current.scrollIntoView();
@@ -18,11 +19,11 @@ const MessageList: React.FC<Props> = ({ messages }) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
   useEffect(() => {
     scrollToBottom();
-  }, []);
+  }, [scrollToBottom]);
 
   return (
     <Box
@@ -37,12 +38,12 @@ const MessageList: React.FC<Props> = ({ messages }) => {
     >
       {messages.map((message, i) => (
         <Box
-          alignSelf={message.author === 'mscbr' ? 'flex-end' : 'flex-start'}
+          alignSelf={message.author === username ? 'flex-end' : 'flex-start'}
           key={`${i}-${message.timeStamp}`}
         >
           <Message
             {...message}
-            background={message.author === 'mscbr' ? 'surfaceDark' : undefined}
+            background={message.author === username ? 'surfaceDark' : undefined}
             width={upSm ? '40vw' : '75vw'}
           />
         </Box>

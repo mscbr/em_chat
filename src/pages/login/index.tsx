@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import Router from 'next/router';
+import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import {
   Center,
   FormControl,
@@ -17,9 +17,7 @@ const Login: React.FC = () => {
   const [storage, setStorage] = useLocalStorage('username');
   const [username, setUsername] = useState('');
 
-  useEffect(() => {
-    if (storage) Router.push('/chat');
-  }, [storage]);
+  if (storage) return <Redirect to="/chat" />;
 
   return (
     <Center
