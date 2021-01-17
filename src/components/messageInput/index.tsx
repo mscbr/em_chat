@@ -3,7 +3,7 @@ import React from 'react';
 import { Button, Textarea, Container } from '@chakra-ui/react';
 
 interface Props {
-  value?: string;
+  value: string;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onSend: () => void;
 }
