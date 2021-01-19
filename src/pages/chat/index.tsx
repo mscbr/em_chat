@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { Redirect, useHistory } from 'react-router-dom';
-import { Grid, GridItem, Button, useBreakpointValue } from '@chakra-ui/react';
+import {
+  Grid,
+  GridItem,
+  Button,
+  Text,
+  useBreakpointValue
+} from '@chakra-ui/react';
 
 import MessageInput from 'components/messageInput';
 import MesageList from 'components/messageList';
@@ -59,8 +65,11 @@ const Chat: React.FC<Props> = ({ username }) => {
         p={8}
         rowSpan={2}
         display={!upSm ? 'none' : 'initial'}
+        textAlign="center"
       >
-        USER PROFILE/CAMERA
+        <Text fontSize="lg" fontWeight={800}>
+          {username}
+        </Text>
         <Button
           onClick={() => {
             clearStorage();
@@ -76,7 +85,10 @@ const Chat: React.FC<Props> = ({ username }) => {
       <GridItem p={2} bg="surface">
         <MessageInput
           value={message}
-          onChange={({ target: { value } }) => setMessage(value)}
+          onChange={({ target: { value } }) => {
+            if (value[0] === '\n') return;
+            setMessage(value);
+          }}
           onSend={handleSendMessage}
         />
       </GridItem>

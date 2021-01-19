@@ -26,7 +26,12 @@ const Message: React.FC<Props> = ({
       <Text fontSize="lg" fontWeight={800}>
         {author}
       </Text>
-      <Text lineHeight={1} textAlign="justify" fontWeight={500}>
+      <Text
+        lineHeight={1}
+        textAlign="justify"
+        fontWeight={500}
+        whiteSpace="pre-wrap"
+      >
         {content}
       </Text>
       <Text mt={1} fontSize="xs" fontStyle="italic" fontWeight={200}>

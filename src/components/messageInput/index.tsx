@@ -9,8 +9,11 @@ interface Props {
 }
 
 const MessageInput: React.FC<Props> = ({ value, onChange, onSend }) => {
-  const handleKeyDown = ({ key }: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (key === 'Enter' && !!value) onSend();
+  const handleKeyDown = ({
+    key,
+    shiftKey
+  }: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (key === 'Enter' && !shiftKey && !!value.trim()) onSend();
   };
   return (
     <Container

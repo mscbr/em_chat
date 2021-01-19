@@ -41,7 +41,6 @@ const Login: React.FC = () => {
             onKeyDown={({ key }) => {
               if (key === 'Enter') {
                 setStorage(username);
-                setUsername('');
               }
             }}
           />
