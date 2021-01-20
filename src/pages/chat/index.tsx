@@ -10,6 +10,7 @@ import {
 
 import MessageInput from 'components/messageInput';
 import MesageList from 'components/messageList';
+import UserList from 'components/userList';
 import { IMessage } from 'types/message';
 import useLocalStorage from 'hooks/useLocalStorage';
 
@@ -55,7 +56,7 @@ const Chat: React.FC<Props> = ({ username }) => {
       borderRadius={5}
     >
       <GridItem bg="surface" p={8} display={!upSm ? 'none' : 'initial'}>
-        USER LIST
+        <UserList username={username} />
       </GridItem>
       <GridItem bg="surface" rowSpan={2}>
         <MesageList messages={messages} username={username} />
