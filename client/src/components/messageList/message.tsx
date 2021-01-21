@@ -8,7 +8,7 @@ type Props = IMessage & { background?: string; width?: string };
 const Message: React.FC<Props> = ({
   content,
   author,
-  timeStamp,
+  timestamp,
   background,
   width
 }) => {
@@ -35,7 +35,7 @@ const Message: React.FC<Props> = ({
         {content}
       </Text>
       <Text mt={1} fontSize="xs" fontStyle="italic" fontWeight={200}>
-        {new Date(timeStamp).toTimeString().slice(0, 5)}
+        {new Date(timestamp).toTimeString().slice(0, 5)}
       </Text>
     </Container>
   );
