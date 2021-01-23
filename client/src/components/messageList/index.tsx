@@ -39,7 +39,7 @@ const MessageList: React.FC<Props> = ({ messages, username }) => {
       {messages.map((message, i) => (
         <Box
           alignSelf={message.author === username ? 'flex-end' : 'flex-start'}
-          key={`${i}-${message.timeStamp}`}
+          key={`${i}-${message.timestamp}`}
         >
           <Message
             {...message}

@@ -11,8 +11,8 @@ import {
 import MessageInput from 'components/messageInput';
 import MesageList from 'components/messageList';
 import UserList from 'components/userList';
-import { IMessage } from 'types/message';
 import useLocalStorage from 'hooks/useLocalStorage';
+import useChat from 'hooks/useChat';
 
 import { messages as msgs } from 'utils/mockData/messages';
 
@@ -22,24 +22,16 @@ interface Props {
 
 const Chat: React.FC<Props> = ({ username }) => {
   const [_, __, clearStorage] = useLocalStorage('username');
+  const { messages, sendMessage } = useChat();
   const upSm = useBreakpointValue({ base: false, md: true });
   const history = useHistory();
 
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<IMessage[]>(msgs);
 
   if (!username) return <Redirect to="/login" />;
 
   const handleSendMessage = () => {
-    if (message)
-      setMessages((state) => [
-        ...state,
-        {
-          content: message,
-          author: username,
-          timeStamp: new Date().toISOString()
-        }
-      ]);
+    if (message) sendMessage(message, username);
     setMessage('');
   };
 
