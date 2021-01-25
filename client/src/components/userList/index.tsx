@@ -2,13 +2,13 @@ import React from 'react';
 import { Box } from '@chakra-ui/react';
 
 import User from './user';
-import { users } from 'utils/mockData/users';
 
 interface Props {
   username: string;
+  users: string[];
 }
 
-const UserList: React.FC<Props> = ({ username }) => {
+const UserList: React.FC<Props> = ({ username, users }) => {
   return (
     <Box
       display="flex"

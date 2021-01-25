@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Redirect, useHistory } from 'react-router-dom';
 import {
   Grid,
+  Box,
   GridItem,
   Button,
   Text,
@@ -11,21 +12,38 @@ import {
 import MessageInput from 'components/messageInput';
 import MesageList from 'components/messageList';
 import UserList from 'components/userList';
+import VideoFeedback from 'components/videoFeedback';
 import useLocalStorage from 'hooks/useLocalStorage';
 import useChat from 'hooks/useChat';
 
 const Chat: React.FC = () => {
-  const [username, __, clearStorage] = useLocalStorage('username');
-  const { messages, sendMessage } = useChat();
+  const [username, _, clearUsername] = useLocalStorage('username');
+  const [userId, __, clearUserId] = useLocalStorage('userId');
+  const { messages, sendMessage, users, error } = useChat(username, userId);
   const upSm = useBreakpointValue({ base: false, md: true });
   const history = useHistory();
 
   const [message, setMessage] = useState('');
 
-  if (!username) return <Redirect to="/login" />;
+  if (error)
+    return (
+      <Box m={24}>
+        <h1>{error}</h1>
+        <button
+          onClick={() => {
+            clearUsername();
+            clearUserId();
+            history.push('/');
+          }}
+        >
+          GO BACK
+        </button>
+      </Box>
+    );
+  if (!username || !userId) return <Redirect to="/login" />;
 
   const handleSendMessage = () => {
-    if (message) sendMessage(message, username);
+    if (message && sendMessage) sendMessage(message, username);
     setMessage('');
   };
 
@@ -42,10 +60,10 @@ const Chat: React.FC = () => {
       borderRadius={5}
     >
       <GridItem bg="surface" p={8} display={!upSm ? 'none' : 'initial'}>
-        <UserList username={username} />
+        <UserList username={username} users={users || []} />
       </GridItem>
       <GridItem bg="surface" rowSpan={2}>
-        <MesageList messages={messages} username={username} />
+        <MesageList messages={messages || []} username={username} />
       </GridItem>
       <GridItem
         bg="surface"
@@ -57,9 +75,11 @@ const Chat: React.FC = () => {
         <Text fontSize="lg" fontWeight={800}>
           {username}
         </Text>
+        <VideoFeedback />
         <Button
           onClick={() => {
-            clearStorage();
+            clearUsername();
+            clearUserId();
             history.push('/');
           }}
           mt={16}
