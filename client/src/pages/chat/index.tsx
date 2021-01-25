@@ -14,14 +14,8 @@ import UserList from 'components/userList';
 import useLocalStorage from 'hooks/useLocalStorage';
 import useChat from 'hooks/useChat';
 
-import { messages as msgs } from 'utils/mockData/messages';
-
-interface Props {
-  username?: string;
-}
-
-const Chat: React.FC<Props> = ({ username }) => {
-  const [_, __, clearStorage] = useLocalStorage('username');
+const Chat: React.FC = () => {
+  const [username, __, clearStorage] = useLocalStorage('username');
   const { messages, sendMessage } = useChat();
   const upSm = useBreakpointValue({ base: false, md: true });
   const history = useHistory();
