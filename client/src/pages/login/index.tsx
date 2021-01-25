@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Center,
   FormControl,
@@ -15,9 +16,22 @@ import useLocalStorage from 'hooks/useLocalStorage';
 
 const Login: React.FC = () => {
   const [storage, setStorage] = useLocalStorage('username');
+  const [userId, setUserId] = useLocalStorage('userId');
+
   const [username, setUsername] = useState('');
+  const [error, setError] = useState<string>('');
 
   if (storage) return <Redirect to="/chat" />;
+
+  const handleSubmit = () => {
+    const uuid = uuidv4();
+    if (uuid && username) {
+      setUserId(uuid);
+      setStorage(username);
+    } else {
+      setError('Valid username is required!');
+    }
+  };
 
   return (
     <Center
@@ -40,16 +54,14 @@ const Login: React.FC = () => {
             onChange={({ target: { value } }) => setUsername(value)}
             onKeyDown={({ key }) => {
               if (key === 'Enter') {
-                setStorage(username);
+                handleSubmit();
               }
             }}
           />
           <FormHelperText>enter your chat nick</FormHelperText>
-          {false && <FormErrorMessage>E R R 0 R</FormErrorMessage>}
+          {error && <FormErrorMessage>{error}</FormErrorMessage>}
           <Button
-            onClick={() => {
-              setStorage(username);
-            }}
+            onClick={handleSubmit}
             mt={4}
             variant="outline"
             border="2px"
