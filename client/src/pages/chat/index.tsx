@@ -5,6 +5,7 @@ import {
   Box,
   GridItem,
   Button,
+  Spinner,
   Text,
   useBreakpointValue
 } from '@chakra-ui/react';
@@ -16,7 +17,11 @@ import VideoFeedback from 'components/videoFeedback';
 import useLocalStorage from 'hooks/useLocalStorage';
 import useChat from 'hooks/useChat';
 
-const Chat: React.FC = () => {
+interface Props {
+  modelStatus: null | 'loading' | 'success';
+}
+
+const Chat: React.FC<Props> = ({ modelStatus }) => {
   const [username, _, clearUsername] = useLocalStorage('username');
   const [userId, __, clearUserId] = useLocalStorage('userId');
   const { messages, sendMessage, users, error } = useChat(username, userId);
@@ -51,8 +56,8 @@ const Chat: React.FC = () => {
     <Grid
       textStyle="basicText"
       h="100vh"
-      templateColumns={upSm ? '1fr 2fr' : '1fr'}
-      templateRows="3fr 1fr 1fr"
+      templateColumns={upSm ? '2fr 2fr' : '1fr'}
+      templateRows="1fr 1fr 1fr"
       gap={1}
       background="silver"
       border="8px solid"
@@ -60,6 +65,23 @@ const Chat: React.FC = () => {
       borderRadius={5}
     >
       <GridItem bg="surface" p={8} display={!upSm ? 'none' : 'initial'}>
+        <Box display="flex" alignItems="flex-end">
+          <Button
+            onClick={() => {
+              clearUsername();
+              clearUserId();
+              history.push('/');
+            }}
+            mb={1}
+            h={8}
+            bg="transparent"
+            border="1px solid white"
+          >
+            ⬅
+          </Button>
+          <Text ml={4}>USERNAME: {username}</Text>
+        </Box>
+        <hr />
         <UserList username={username} users={users || []} />
       </GridItem>
       <GridItem bg="surface" rowSpan={2}>
@@ -69,25 +91,11 @@ const Chat: React.FC = () => {
         bg="surface"
         p={8}
         rowSpan={2}
-        display={!upSm ? 'none' : 'initial'}
-        textAlign="center"
+        display={!upSm ? 'none' : 'flex'}
+        flexDir="column"
+        alignItems="center"
       >
-        <Text fontSize="lg" fontWeight={800}>
-          {username}
-        </Text>
-        <VideoFeedback />
-        <Button
-          onClick={() => {
-            clearUsername();
-            clearUserId();
-            history.push('/');
-          }}
-          mt={16}
-          bg="transparent"
-          border="1px solid white"
-        >
-          LOGOUT
-        </Button>
+        {modelStatus === 'success' ? <VideoFeedback /> : <Spinner />}
       </GridItem>
       <GridItem p={2} bg="surface">
         <MessageInput
