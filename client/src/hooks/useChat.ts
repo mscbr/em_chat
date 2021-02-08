@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
+import * as faceapi from 'face-api.js';
 import { io, Socket } from 'socket.io-client';
 
 import { IMessage } from 'types/message';
+import { IUser } from 'types/user';
 
 const CONNECTION_ERROR = 'connectionError';
 const NEW_CHAT_MESSAGE_EVENT = 'newChatMessage'; // Name of the event
 const GET_USERS_LIST = 'getUsersList';
+const DETECTION_DATA_TRANSFER = 'detectionDataTransfer';
 const SOCKET_SERVER_URL = 'http://localhost:5000';
 
 const useChat = (username?: string, userId?: string) => {
   const [error, setError] = useState<string>('');
   const [messages, setMessages] = useState<IMessage[]>([]); // Sent and received messages
-  const [users, setUsers] = useState<string[]>([]);
+  const [users, setUsers] = useState<IUser[]>([]);
   const socketRef = useRef<Socket>();
 
   useEffect(() => {
@@ -25,7 +28,7 @@ const useChat = (username?: string, userId?: string) => {
         setError(error.message);
       });
 
-      socketRef.current.on(GET_USERS_LIST, (users: string[]) => {
+      socketRef.current.on(GET_USERS_LIST, (users: IUser[]) => {
         socketRef.current?.emit(GET_USERS_LIST);
         setUsers(users);
       });
@@ -53,9 +56,21 @@ const useChat = (username?: string, userId?: string) => {
     });
   };
 
+  const transferDetections = (
+    username: string,
+    data?: faceapi.WithFaceExpressions<{
+      detection: faceapi.FaceDetection;
+    }>[]
+  ) => {
+    socketRef.current?.emit(DETECTION_DATA_TRANSFER, {
+      username,
+      data
+    });
+  };
+
   if (error) return { error };
 
-  return { messages, sendMessage, users, error };
+  return { messages, sendMessage, users, transferDetections, error };
 };
 
 export default useChat;

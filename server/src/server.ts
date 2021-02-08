@@ -15,9 +15,27 @@ let io = new Server(httpServer, {
 const PORT = 5000;
 const CONNECTION_ERROR = "connectionError";
 const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
+const DETECTION_DATA_TRANSFER = "detectionDataTransfer";
 const GET_USERS_LIST = "getUsersList";
 
-let usersList: Array<{username: string; userId: string;}> = []
+interface IDetectionData {
+  detection?: { score: number; };
+    expressions?: {
+      angry: number;
+      disgusted: number;
+      fearful: number;
+      happy: number;
+      neutral: number;
+      sad: number;
+      surprised: number;
+    }
+}
+
+let usersList: Array<{
+  username: string;
+  userId: string;
+  detectionData?: IDetectionData[] | [];
+}> = []
 
 type SocketPayload = Socket & {
   handshake: {
@@ -43,15 +61,25 @@ io.on('connection', (socket: SocketPayload) => {
     socket.emit(CONNECTION_ERROR, { message: "Username not provided" });
     socket.disconnect(true);
   }
-  socket.emit(GET_USERS_LIST, usersList.map(user => user.username));
+  socket.emit(GET_USERS_LIST, usersList);
 
   socket.on(GET_USERS_LIST, () => {
-    socket.emit(GET_USERS_LIST, usersList.map(user => user.username));
+    socket.emit(GET_USERS_LIST, usersList);
   });
 
   socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
     io.emit(NEW_CHAT_MESSAGE_EVENT, data);
   });
+
+  socket.on(DETECTION_DATA_TRANSFER, (data: {username: string; data: IDetectionData[] | []}) => {
+    const {username, data: detections} = data;
+    usersList = [...usersList].map(user => {
+      if (user.username === username) {
+        return {username, userId: user.userId, detectionData: detections};
+      }
+      return user;
+    });
+  })
   socket.on('disconnect', () => {
     usersList = [...usersList].filter(user => user.userId !== userId);
   })
