@@ -24,7 +24,10 @@ interface Props {
 const Chat: React.FC<Props> = ({ modelStatus }) => {
   const [username, _, clearUsername] = useLocalStorage('username');
   const [userId, __, clearUserId] = useLocalStorage('userId');
-  const { messages, sendMessage, users, error } = useChat(username, userId);
+  const { messages, sendMessage, users, transferDetections, error } = useChat(
+    username,
+    userId
+  );
   const upSm = useBreakpointValue({ base: false, md: true });
   const history = useHistory();
 
@@ -56,8 +59,8 @@ const Chat: React.FC<Props> = ({ modelStatus }) => {
     <Grid
       textStyle="basicText"
       h="100vh"
-      templateColumns={upSm ? '2fr 2fr' : '1fr'}
-      templateRows="1fr 1fr 1fr"
+      templateColumns={upSm ? '1fr 2fr' : '1fr'}
+      templateRows="3fr 1fr 1fr"
       gap={1}
       background="silver"
       border="8px solid"
@@ -95,7 +98,14 @@ const Chat: React.FC<Props> = ({ modelStatus }) => {
         flexDir="column"
         alignItems="center"
       >
-        {modelStatus === 'success' ? <VideoFeedback /> : <Spinner />}
+        {modelStatus === 'success' ? (
+          <VideoFeedback
+            username={username}
+            transferDetections={transferDetections}
+          />
+        ) : (
+          <Spinner />
+        )}
       </GridItem>
       <GridItem p={2} bg="surface">
         <MessageInput

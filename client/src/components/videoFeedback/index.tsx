@@ -10,7 +10,17 @@ const CAPTURE_OPTIONS = {
   video: { facingMode: 'user' }
 };
 
-const VideoFeedback = () => {
+interface Props {
+  username: string;
+  transferDetections?: (
+    username: string,
+    data?: faceapi.WithFaceExpressions<{
+      detection: faceapi.FaceDetection;
+    }>[]
+  ) => void;
+}
+
+const VideoFeedback: React.FC<Props> = ({ username, transferDetections }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [context, setContext] = useState<CanvasRenderingContext2D>();
@@ -41,34 +51,11 @@ const VideoFeedback = () => {
               videoRef.current,
               new faceapi.TinyFaceDetectorOptions()
             )
-            .withFaceLandmarks()
             .withFaceExpressions();
-          const resizedDetections = faceapi.resizeResults(detections, {
-            //@ts-expect-error
-            width: canvasRef.current.width,
-            //@ts-expect-error
-            height: canvasRef.current.height
-          });
-          context.clearRect(
-            0,
-            0,
-            //@ts-expect-error
-            canvasRef.current.width,
-            //@ts-expect-error
-            canvasRef.current.height
-          );
-          //@ts-expect-error
-          faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
-          faceapi.draw.drawFaceLandmarks(
-            //@ts-expect-error
-            canvasRef.current,
-            resizedDetections
-          );
-          faceapi.draw.drawFaceExpressions(
-            //@ts-expect-error
-            canvasRef.current,
-            resizedDetections
-          );
+
+          if (transferDetections && detections) {
+            transferDetections(username, detections);
+          }
         }, 100);
       }
 

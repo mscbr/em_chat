@@ -1,12 +1,17 @@
 import React from 'react';
 import { Container, Text } from '@chakra-ui/react';
 
+import { IUser } from 'types/user';
+
 interface Props {
-  user: string;
+  user: IUser;
   background?: string;
 }
 
-const User: React.FC<Props> = ({ user, background }) => {
+const User: React.FC<Props> = ({
+  user: { username, detectionData },
+  background
+}) => {
   return (
     <Container
       bg={background || 'surfaceLight'}
@@ -19,8 +24,19 @@ const User: React.FC<Props> = ({ user, background }) => {
       w="100%"
     >
       <Text fontSize="lg" fontWeight={800}>
-        {user}
+        {username}
       </Text>
+      {detectionData
+        ?.filter((set) => !!set.expressions)
+        .map((object, g) => {
+          return Object.entries(object.expressions)
+            .filter(([key, value]) => value > 0.2)
+            .map(([key, value], i) => (
+              <Text key={`${username}${i}${g}`}>
+                {key + ': ' + Math.round(value * 100) / 100}
+              </Text>
+            ));
+        })}
     </Container>
   );
 };
