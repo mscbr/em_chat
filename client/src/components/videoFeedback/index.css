@@ -8,6 +8,22 @@
   width: auto;
   height: 100%;
 }
+#drawBtn {
+  position: absolute;
+  z-index: 50;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  margin-top: -16px;
+  margin-left: -16px;
+  cursor: pointer;
+  outline: none;
+  color: #1e1e40;
+  font-weight: 900;
+}
+#drawBtn:hover {
+  opacity: 0.9;
+}
 #canvas {
   top: 0;
   left: 0;
