@@ -1,0 +1,24 @@
+{
+  "name": "em_chat",
+  "version": "1.0.0",
+  "description": "Chat app with face expression recognition. Camera is only used for user feedback - video is not streamed. Detections are streamed within the users data.",
+  "main": "server/dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-client": "cd ./client && npm install && npm run build",
+    "build-server": "cd ./server && npm install && npm run build",
+    "build": "npm run build-client && npm run build-server",
+    "start": "node ./server/dist/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mscbr/em_chat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mscbr/em_chat/issues"
+  },
+  "homepage": "https://github.com/mscbr/em_chat#readme"
+}

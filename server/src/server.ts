@@ -1,56 +1,65 @@
-import express, { Application } from 'express';
-import { createServer } from 'http';
-import { Server, Socket } from 'socket.io';
+import express, { Application } from "express";
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
+import path from "path";
 
 const app: Application = express();
+
+const publicPath = path.join(__dirname, "../../client/build");
+
+app.use(express.static(publicPath));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(publicPath, "index.html"));
+});
 
 const httpServer = createServer(app);
 let io = new Server(httpServer, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  }
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 const CONNECTION_ERROR = "connectionError";
 const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
 const DETECTION_DATA_TRANSFER = "detectionDataTransfer";
 const GET_USERS_LIST = "getUsersList";
 
 interface IDetectionData {
-  detection?: { score: number; };
-    expressions?: {
-      angry: number;
-      disgusted: number;
-      fearful: number;
-      happy: number;
-      neutral: number;
-      sad: number;
-      surprised: number;
-    }
+  detection?: { score: number };
+  expressions?: {
+    angry: number;
+    disgusted: number;
+    fearful: number;
+    happy: number;
+    neutral: number;
+    sad: number;
+    surprised: number;
+  };
 }
 
 let usersList: Array<{
   username: string;
   userId: string;
   detectionData?: IDetectionData[] | [];
-}> = []
+}> = [];
 
 type SocketPayload = Socket & {
   handshake: {
     query: {
       username: string;
       userId: string;
-    }
-  }
-}
+    };
+  };
+};
 
-io.on('connection', (socket: SocketPayload) => {
+io.on("connection", (socket: SocketPayload) => {
   const { username, userId } = socket.handshake.query;
 
   if (username && userId) {
-    const usernames = usersList.map(user => user.username);
+    const usernames = usersList.map((user) => user.username);
     if (usernames.indexOf(username) >= 0) {
       socket.emit(CONNECTION_ERROR, { message: "Username already in use" });
       socket.disconnect(true);
@@ -71,19 +80,22 @@ io.on('connection', (socket: SocketPayload) => {
     io.emit(NEW_CHAT_MESSAGE_EVENT, data);
   });
 
-  socket.on(DETECTION_DATA_TRANSFER, (data: {username: string; data: IDetectionData[] | []}) => {
-    const {username, data: detections} = data;
-    usersList = [...usersList].map(user => {
-      if (user.username === username) {
-        return {username, userId: user.userId, detectionData: detections};
-      }
-      return user;
-    });
-  })
-  socket.on('disconnect', () => {
-    usersList = [...usersList].filter(user => user.userId !== userId);
-  })
-})
+  socket.on(
+    DETECTION_DATA_TRANSFER,
+    (data: { username: string; data: IDetectionData[] | [] }) => {
+      const { username, data: detections } = data;
+      usersList = [...usersList].map((user) => {
+        if (user.username === username) {
+          return { username, userId: user.userId, detectionData: detections };
+        }
+        return user;
+      });
+    }
+  );
+  socket.on("disconnect", () => {
+    usersList = [...usersList].filter((user) => user.userId !== userId);
+  });
+});
 
 httpServer.listen(PORT, () => {
   console.log(`APP RUNNING ON PORT: ${PORT}`);
