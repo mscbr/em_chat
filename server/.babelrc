@@ -1,0 +1,18 @@
+{
+  "compact": false,
+  "retainLines": true,
+  "minified": false,
+  "inputSourceMap": false,
+  "sourceMaps": false,
+  "presets": [
+    ["@babel/preset-typescript"],
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ]
+}
